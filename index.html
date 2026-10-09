@@ -1,0 +1,1088 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Путь стоматолога</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Unbounded:wght@500;700&family=Manrope:wght@400;500;700&family=JetBrains+Mono:wght@500;700&display=swap">
+<style>
+/* Layout: one narrow column — sticky HUD, scene card, journal. Palette: enamel, Neva granite, teal of a clinic, gold of the dream board. */
+:root{
+  --bg:#ECF0F1; --surface:#FFFFFF; --surface-2:#F4F7F7; --ink:#13202A; --muted:#566673; --line:#D3DCE0;
+  --accent:#0E6F6A; --accent-ink:#FFFFFF; --accent-soft:#D7ECEA;
+  --gold:#8E6C22; --gold-soft:#F3EAD6;
+  --ok:#2E7D4F; --bad:#B23B2C; --bad-soft:#F7E1DD;
+  --tooth:#FBFAF5; --tooth-line:#93A3AE; --gum:#F1CACA; --decay:#3B2A22; --fill:#B4BFC7; --crown:#E2C77E; --stain:#EAD9A2; --blood:#C0453A;
+  --f-display:'Unbounded','Arial Black',system-ui,sans-serif;
+  --f-body:'Manrope',system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;
+  --f-mono:'JetBrains Mono',ui-monospace,Menlo,Consolas,monospace;
+  --r:14px;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0B0E10; --surface:#14191D; --surface-2:#1B2227; --ink:#E6ECEE; --muted:#93A1AB; --line:#29343C;
+    --accent:#43C2B5; --accent-ink:#06201E; --accent-soft:#163533;
+    --gold:#D8B566; --gold-soft:#2C2616;
+    --ok:#62C48A; --bad:#E77462; --bad-soft:#3A1E1A;
+    --tooth:#E9E5DA; --tooth-line:#6D7C86; --gum:#5A3036; --decay:#2A1A14; --fill:#8E99A1; --crown:#C9A85A; --stain:#CDB977; --blood:#E06253;
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0B0E10; --surface:#14191D; --surface-2:#1B2227; --ink:#E6ECEE; --muted:#93A1AB; --line:#29343C;
+  --accent:#43C2B5; --accent-ink:#06201E; --accent-soft:#163533;
+  --gold:#D8B566; --gold-soft:#2C2616;
+  --ok:#62C48A; --bad:#E77462; --bad-soft:#3A1E1A;
+  --tooth:#E9E5DA; --tooth-line:#6D7C86; --gum:#5A3036; --decay:#2A1A14; --fill:#8E99A1; --crown:#C9A85A; --stain:#CDB977; --blood:#E06253;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+[hidden]{display:none!important}
+body{background:var(--bg);color:var(--ink);font:16px/1.5 var(--f-body);-webkit-font-smoothing:antialiased}
+button{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.wrap{max-width:720px;margin:0 auto;padding-inline:16px;padding-block:0 40px}
+
+/* HUD */
+.hud{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--bg);padding-block:10px;border-bottom:1px solid var(--line);margin-bottom:18px}
+.hud-top{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.who{min-width:0}
+.who b{font-family:var(--f-display);font-weight:700;font-size:15px;letter-spacing:.01em;display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.who span{font-size:12px;color:var(--muted)}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.chip{font:500 12px/1 var(--f-mono);font-variant-numeric:tabular-nums;padding:6px 8px;border-radius:999px;background:var(--surface);border:1px solid var(--line);white-space:nowrap}
+.chip i{font-style:normal;color:var(--muted);margin-right:4px}
+.chip.neg{color:var(--bad);border-color:var(--bad)}
+.energy{display:flex;align-items:center;gap:8px;margin-top:8px;font:500 12px var(--f-mono);color:var(--muted)}
+.energy .track{flex:1;height:6px;border-radius:3px;background:var(--line);overflow:hidden}
+.energy .track span{display:block;height:100%;background:var(--accent);transition:width .3s}
+.energy.low .track span{background:var(--bad)}
+.ghost{background:none;border:1px solid var(--line);border-radius:999px;padding:7px 12px;font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap}
+.ghost:hover{border-color:var(--accent);color:var(--accent)}
+.ghost.gold{border-color:var(--gold);color:var(--gold)}
+
+/* Scene typography */
+.eyebrow{font:500 11px var(--f-mono);letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin:0 0 6px}
+h1{font-family:var(--f-display);font-weight:700;font-size:clamp(28px,7vw,44px);line-height:1.05;margin:0 0 10px;text-wrap:balance;letter-spacing:-.01em}
+h2{font-family:var(--f-display);font-weight:500;font-size:20px;line-height:1.2;margin:0 0 8px;text-wrap:balance}
+h3{font:700 13px var(--f-body);letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin:22px 0 10px}
+.lead{color:var(--muted);margin:0 0 16px;max-width:60ch}
+p{margin:0 0 12px}
+.scene{display:flex;flex-direction:column}
+
+/* Skill bars */
+.skills{display:grid;gap:8px;margin:6px 0 4px}
+.skill{display:grid;grid-template-columns:96px 1fr 38px;align-items:center;gap:10px;font-size:14px}
+.skill .track{height:8px;border-radius:4px;background:var(--line);overflow:hidden}
+.skill .track span{display:block;height:100%;background:var(--accent)}
+.skill.gold .track span{background:var(--gold)}
+.skill b{font:700 13px var(--f-mono);text-align:right;font-variant-numeric:tabular-nums}
+
+/* Planner */
+.slots{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.slots.two{grid-template-columns:repeat(2,1fr)}
+.slot{min-height:52px;border:1.5px dashed var(--line);border-radius:12px;background:none;font-size:13px;font-weight:700;padding:8px;cursor:pointer;color:var(--muted);line-height:1.25}
+.slot.filled{border-style:solid;border-color:var(--accent);background:var(--accent-soft);color:var(--ink)}
+.slot:disabled{cursor:default}
+.acts{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-top:12px}
+.act{display:flex;flex-direction:column;align-items:flex-start;gap:3px;text-align:left;padding:12px;border-radius:var(--r);border:1px solid var(--line);background:var(--surface);cursor:pointer;min-width:0}
+.act:hover:not(:disabled){border-color:var(--accent)}
+.act:disabled{opacity:.45;cursor:not-allowed}
+.act.on{border-color:var(--accent);box-shadow:inset 0 0 0 1px var(--accent)}
+.act-t{font-weight:700;font-size:15px;line-height:1.25}
+.act-d{font-size:13px;color:var(--muted);line-height:1.35}
+.act-e{font:500 11px var(--f-mono);color:var(--bad);margin-top:4px}
+.act-e.pos{color:var(--ok)}
+.act-e.money{color:var(--gold)}
+.primary{margin-top:16px;width:100%;padding:15px 18px;border-radius:var(--r);border:0;background:var(--accent);color:var(--accent-ink);font-weight:700;font-size:16px;cursor:pointer}
+.primary:disabled{opacity:.4;cursor:not-allowed}
+.secondary{margin-top:8px;width:100%;padding:13px 18px;border-radius:var(--r);border:1px solid var(--line);background:var(--surface);font-weight:700;cursor:pointer}
+.opts{display:grid;gap:8px;margin-top:8px}
+.opt{text-align:left;padding:13px 14px;border-radius:12px;border:1px solid var(--line);background:var(--surface);cursor:pointer;font-size:15px;line-height:1.4}
+.opt:hover:not(:disabled){border-color:var(--accent)}
+.opt:disabled{opacity:.5;cursor:default}
+.opt.right{border-color:var(--ok);background:color-mix(in srgb,var(--ok) 12%,var(--surface))}
+.opt.wrong{border-color:var(--bad);background:var(--bad-soft)}
+.note{padding:12px 14px;border-radius:12px;background:var(--surface-2);border:1px solid var(--line);font-size:14px;margin-top:10px}
+.note.good{border-color:var(--ok)}
+.note.bad{border-color:var(--bad)}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:16px}
+
+/* Intro */
+.intro h1{font-size:clamp(34px,10vw,64px)}
+.intro .road{display:grid;gap:0;margin:18px 0 6px;border-left:2px solid var(--accent);padding-left:14px}
+.intro .road div{padding:6px 0;font-size:15px}
+.intro .road b{font:700 11px var(--f-mono);color:var(--accent);letter-spacing:.1em;display:block}
+label.field{display:block;font-size:13px;font-weight:700;color:var(--muted);margin-top:14px}
+input[type=text]{width:100%;margin-top:6px;padding:13px 14px;border-radius:12px;border:1px solid var(--line);background:var(--surface);color:var(--ink);font:500 17px var(--f-body)}
+
+/* Exam results */
+table.res{width:100%;border-collapse:collapse;font-variant-numeric:tabular-nums}
+table.res td{padding:10px 0;border-bottom:1px solid var(--line)}
+table.res td:last-child{text-align:right;font:700 18px var(--f-mono)}
+table.res tr.total td{border-bottom:0;font-weight:700}
+table.res tr.total td:last-child{font-size:26px;color:var(--accent)}
+
+/* Clinic case */
+.patient{display:flex;align-items:center;gap:12px;margin-bottom:12px}
+.ava{width:48px;height:48px;border-radius:50%;display:grid;place-items:center;font:700 16px var(--f-display);background:var(--accent-soft);color:var(--accent);flex:none}
+.patient b{display:block;font-size:17px}
+.patient span{color:var(--muted);font-size:13px}
+.steps{display:flex;gap:4px;margin:4px 0 14px}
+.steps i{flex:1;height:4px;border-radius:2px;background:var(--line)}
+.steps i.done{background:var(--accent)}
+.chat{display:flex;flex-direction:column;gap:8px;margin-bottom:12px}
+.msg{max-width:88%;padding:10px 13px;border-radius:16px;font-size:15px;line-height:1.45}
+.msg.p{background:var(--surface);border:1px solid var(--line);border-bottom-left-radius:4px;align-self:flex-start}
+.msg.d{background:var(--accent);color:var(--accent-ink);border-bottom-right-radius:4px;align-self:flex-end}
+.msg.n{align-self:center;max-width:100%;background:none;color:var(--muted);font-size:13px;text-align:center;padding:2px 8px}
+.msg.f{align-self:stretch;max-width:100%;background:var(--surface-2);border:1px dashed var(--tooth-line);font-size:14px;border-radius:10px}
+.msg.f b{font:700 11px var(--f-mono);letter-spacing:.08em;color:var(--muted);display:block;margin-bottom:2px}
+.chart-box{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:10px 8px 6px;overflow-x:auto}
+svg.chart{display:block;width:100%;min-width:320px;height:auto}
+.chart text{font:500 10px var(--f-mono);fill:var(--muted)}
+.chart .gum{fill:var(--gum)}
+.chart .tb{fill:var(--tooth);stroke:var(--tooth-line);stroke-width:1.2}
+.chart .tb.miss{fill:none;stroke-dasharray:3 3}
+.chart .tb.crown{fill:var(--crown)}
+.chart .tb.stain{fill:var(--stain)}
+.chart .decay{fill:var(--decay)}
+.chart .fl{fill:var(--fill)}
+.chart .blood{fill:var(--blood);opacity:.75}
+.chart g.click{cursor:pointer}
+.chart g.click:hover .tb,.chart g.click:focus .tb{stroke:var(--accent);stroke-width:2.4}
+.chart g.wrong .tb{stroke:var(--bad);stroke-width:2.4}
+.chart g.right .tb{stroke:var(--ok);stroke-width:3}
+.chart g.right text,.chart g.wrong text{font-weight:700}
+.chart g:focus{outline:none}
+.legend{font-size:12px;color:var(--muted);margin:6px 4px 0}
+.stars{font:700 28px var(--f-mono);color:var(--gold);letter-spacing:.1em}
+ul.check{list-style:none;padding:0;margin:8px 0;display:grid;gap:6px}
+ul.check li{display:grid;grid-template-columns:22px 1fr;gap:6px;font-size:15px}
+ul.check li::before{content:"✓";font:700 15px var(--f-mono);color:var(--ok)}
+ul.check li.no::before{content:"✗";color:var(--bad)}
+ul.check li.half::before{content:"~";color:var(--gold)}
+
+/* Hub */
+.status{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin:4px 0 6px}
+.stat{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:10px 12px;min-width:0}
+.stat i{font-style:normal;display:block;font-size:12px;color:var(--muted)}
+.stat b{font:700 16px var(--f-mono);font-variant-numeric:tabular-nums}
+
+/* Journal */
+.journal{margin-top:28px}
+.journal ol{list-style:none;margin:0;padding:0;display:grid;gap:6px}
+.journal li{font-size:14px;color:var(--muted);padding-left:14px;position:relative}
+.journal li::before{content:"";position:absolute;left:0;top:.6em;width:6px;height:6px;border-radius:50%;background:var(--line)}
+.journal li:first-child{color:var(--ink)}
+.journal li:first-child::before{background:var(--accent)}
+.journal li.g::before{background:var(--gold)}
+.journal li.b::before{background:var(--bad)}
+
+/* Dream board sheet */
+.sheet{position:fixed;inset:0;z-index:20;background:color-mix(in srgb,var(--bg) 60%,transparent);backdrop-filter:blur(6px);display:flex;justify-content:center;align-items:flex-end}
+.sheet-in{background:var(--surface);width:100%;max-width:720px;max-height:88%;overflow:auto;border-radius:20px 20px 0 0;border:1px solid var(--line);padding:20px 16px calc(24px + env(safe-area-inset-bottom,0px))}
+.sheet-head{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:6px}
+.dreams{display:grid;gap:8px;margin-top:10px}
+.dream{display:grid;grid-template-columns:28px 1fr auto;align-items:center;gap:10px;padding:11px 12px;border-radius:12px;border:1px solid var(--line);background:var(--surface-2)}
+.dream .mk{width:24px;height:24px;border-radius:50%;border:1.5px solid var(--tooth-line);display:grid;place-items:center;font:700 13px var(--f-mono)}
+.dream.done{border-color:var(--gold);background:var(--gold-soft)}
+.dream.done .mk{background:var(--gold);border-color:var(--gold);color:var(--surface)}
+.dream b{display:block;font-size:15px;line-height:1.3}
+.dream small{color:var(--muted);font-size:12px}
+.dream .buy{border:1px solid var(--gold);color:var(--gold);background:none;border-radius:999px;padding:6px 10px;font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap}
+.dream .buy:disabled{opacity:.4;cursor:not-allowed}
+.stamps{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}
+.stamp{font:700 11px var(--f-mono);letter-spacing:.06em;text-transform:uppercase;padding:5px 8px;border:1.5px solid var(--gold);color:var(--gold);border-radius:6px;transform:rotate(-2deg)}
+.foot{margin-top:28px;padding-top:14px;border-top:1px solid var(--line);font-size:12px;color:var(--muted);display:flex;flex-wrap:wrap;gap:10px;justify-content:space-between;align-items:center}
+.foot .ghost{font-size:12px}
+@media (max-width:380px){.acts{grid-template-columns:1fr}.status{grid-template-columns:1fr}}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+.fade{animation:fade .35s ease-out}
+@keyframes fade{from{opacity:.4;transform:translateY(4px)}to{opacity:1;transform:none}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="hud" id="hud"></header>
+  <main id="screen" class="scene"></main>
+  <section class="journal" id="journal"></section>
+  <footer class="foot" id="foot"></footer>
+</div>
+<div class="sheet" id="sheet" hidden></div>
+
+<script>
+'use strict';
+/* ===================== utils ===================== */
+const KEY = 'stomat-path-v1';
+const $ = s => document.querySelector(s);
+const rnd = (a, b) => a + Math.random() * (b - a);
+const ri = (a, b) => Math.floor(rnd(a, b + 1));
+const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
+const fmt = n => Math.round(n).toLocaleString('ru-RU');
+const rub = n => fmt(n) + ' ₽';
+const esc = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const years = n => { const a = n % 10, b = n % 100; return n + ' ' + (a === 1 && b !== 11 ? 'год' : (a >= 2 && a <= 4 && (b < 12 || b > 14) ? 'года' : 'лет')); };
+const pickOne = arr => arr[Math.floor(Math.random() * arr.length)];
+const shuffle = arr => arr.map(v => [Math.random(), v]).sort((a, b) => a[0] - b[0]).map(x => x[1]);
+
+let S = null;
+let ui = { sheet: false, confirmReset: false, tripMenu: false, lastScene: null };
+
+function fresh(name) {
+  return {
+    v: 1, name: name || 'Я', scene: 'school', ageBase: 17,
+    month: 0, picks: [], usedEv: [], ev: null, gapYear: false,
+    st: { chem: 42, bio: 50, rus: 58, energy: 80, id: 0 },
+    tiktok: 120, tg: 0, tgOn: false, money: 5000,
+    ege: null, admit: null, target: 0,
+    uni: { year: 1, know: 20, hands: 5, surg: 0, sno: false, picks: [], quizDone: false, quizPick: null },
+    accred: null, path: null, resid: 0, residDone: false,
+    courses: { implant: false, sinus: false },
+    day: 0, rep: 0, skill: 0, clinics: 0, mentees: 0, style: 0, contentToday: false,
+    trips: [], car: null, house: false, finaleSeen: false,
+    cs: null, lastCase: null, log: []
+  };
+}
+function save() { try { localStorage.setItem(KEY, JSON.stringify(S)); } catch (e) {} }
+function load() { try { const r = localStorage.getItem(KEY); return r ? JSON.parse(r) : null; } catch (e) { return null; } }
+function log(m, k) { S.log.unshift({ m, k: k || '' }); S.log = S.log.slice(0, 8); }
+function age() {
+  if (S.scene === 'school' || S.scene === 'event' && S.ev && S.ev.next === 'school' || S.scene === 'ege') return S.ageBase;
+  if (!S.path) return S.ageBase + (S.uni ? S.uni.year : 1);
+  return S.ageBase + 6 + Math.floor(S.day / 40);
+}
+
+/* ===================== shared mechanics ===================== */
+function gain(key, base) {
+  const eff = S.st.energy < 25 ? 0.5 : 1;
+  const inc = Math.max(0.6, base * eff * (1 - S.st[key] / 125) + rnd(-1, 1.5));
+  S.st[key] = clamp(S.st[key] + inc, 0, 100);
+  return inc;
+}
+function post(mult) {
+  let g = ri(40, 220) * (mult || 1) * (1 + S.style * 0.15) * (1 + Math.log10(1 + S.tiktok) / 4);
+  const viral = Math.random() < 0.1;
+  if (viral) g *= ri(12, 30);
+  g = Math.round(g);
+  S.tiktok += g;
+  if (S.tgOn) S.tg += Math.round(g * 0.12);
+  log(viral ? `Видео залетело в рекомендации: +${fmt(g)} подписчиков в TikTok` : `Новое видео: +${fmt(g)} подписчиков`, viral ? 'g' : '');
+  return g;
+}
+function addTrip(place) {
+  if (!S.trips.includes(place)) S.trips.push(place);
+}
+
+/* ===================== Chapter 1: 11th grade ===================== */
+const MONTHS = ['Сентябрь', 'Октябрь', 'Ноябрь', 'Декабрь', 'Январь', 'Февраль', 'Март', 'Апрель', 'Май'];
+const BUDGET_PASS = 275;
+const SCHOOL_ACTS = [
+  { id: 'chem', t: 'Курсы по химии', d: 'Органика, задачи 33–34', e: -14, run: () => { const g = gain('chem', 12); return `Химия +${g.toFixed(1)}`; } },
+  { id: 'bio', t: 'Биология', d: 'Генетика, анатомия человека', e: -13, run: () => { const g = gain('bio', 12); return `Биология +${g.toFixed(1)}`; } },
+  { id: 'rus', t: 'Русский', d: 'Сочинение, задание 27', e: -11, run: () => { const g = gain('rus', 11); return `Русский +${g.toFixed(1)}`; } },
+  { id: 'mock', t: 'Пробник ЕГЭ', d: 'Прогноз баллов и опыт экзамена', e: -16, run: () => {
+      ['chem', 'bio', 'rus'].forEach(k => S.st[k] = clamp(S.st[k] + 2, 0, 100));
+      const f = k => clamp(Math.round(S.st[k] + 3), 0, 100);
+      return `Пробник: химия ≈${f('chem')}, биология ≈${f('bio')}, русский ≈${f('rus')}. Сумма ≈${f('chem') + f('bio') + f('rus')}`;
+    } },
+  { id: 'tt', t: 'Снять TikTok', d: 'Будни будущего стоматолога', e: -6, run: () => { post(1); return null; } },
+  { id: 'rest', t: 'Выспаться', d: 'Сон, прогулка, сериал', e: 30, run: () => null }
+];
+const SCHOOL_EVENTS = {
+  essay: { t: 'Итоговое сочинение', x: 'Первая среда декабря. Итоговое сочинение — допуск к ЕГЭ. Одна из тем про выбор жизненного пути.', o: [
+    { l: 'Написать про мечту стать хирургом-стоматологом', r: () => { if (S.st.rus >= 45 || Math.random() < 0.85) { S.st.rus += 2; return 'Зачёт! Допуск к ЕГЭ получен. Русский +2.'; } S.st.energy -= 10; return 'Незачёт. Пересдача в феврале, уже зачёт. Нервы потрачены: энергия −10.'; } },
+    { l: 'Взять надёжный аргумент из «Войны и мира»', r: () => { S.st.rus += 1; return 'Зачёт. Скучно, но надёжно.'; } }] },
+  bday: { t: 'День рождения у друзей', x: 'В субботу у друзей день рождения. А у тебя не дорешан вариант по химии.', o: [
+    { l: 'Пойти, отдыхать тоже надо', r: () => { S.st.energy += 15; return 'Классный вечер. Энергия +15.'; } },
+    { l: 'Остаться и дорешать вариант', r: () => { gain('chem', 5); S.st.energy -= 5; return 'Вариант дорешан, химия подросла.'; } }] },
+  comment: { t: 'Вопрос под видео', x: 'Под твоим TikTok спрашивают: «А сколько баллов нужно в Павлова на стомат?»', o: [
+    { l: 'Ответить отдельным видео', r: () => { const g = post(2.5); return `Видео-ответ принесло +${fmt(g)} подписчиков.`; } },
+    { l: 'Ответить в комментариях', r: () => { S.tiktok += 40; return 'Пара лайков и +40 подписчиков.'; } }] },
+  volunteer: { t: 'Волонтёрство', x: 'В детской поликлинике ищут волонтёров на выходные. Многие вузы дают за это баллы за индивидуальные достижения.', o: [
+    { l: 'Записаться', r: () => { S.st.id = Math.min(10, S.st.id + 3); S.st.energy -= 10; return '+3 балла за индивидуальные достижения.'; } },
+    { l: 'Не сейчас', r: () => 'Выходные остались свободными.' }] },
+  intensive: { t: 'Интенсив по биологии', x: 'Родители предлагают оплатить двухнедельный интенсив по генетике.', o: [
+    { l: 'Соглашаюсь', r: () => { gain('bio', 8); S.st.energy -= 12; return 'Задачи по генетике больше не пугают.'; } },
+    { l: 'Справлюсь по учебнику', r: () => { gain('bio', 3); return 'Медленно, но верно.'; } }] },
+  grandpa: { t: 'Семейный ужин', x: 'Дедушка спрашивает: «Точно стоматология? Может, лучше юристом?»', o: [
+    { l: 'Рассказать про импланты и свою будущую клинику', r: () => { S.st.energy += 10; return 'Дедушка проникся и обещал стать первым пациентом. Энергия +10.'; } },
+    { l: 'Отшутиться', r: () => { S.st.energy += 4; return 'Посмеялись и сменили тему.'; } }] },
+  chemtest: { t: 'Контрольная по органике', x: 'Внезапная контрольная по химии: цепочки превращений.', o: [
+    { l: 'Решать всё подряд', r: () => { if (S.st.chem >= 60) { S.st.chem += 2; return 'Пятёрка! Химия +2.'; } return 'Тройка. Пробелы в органике видны, надо добирать.'; } },
+    { l: 'Начать с лёгких заданий', r: () => { S.st.chem += 1; return 'Четвёрка. Стратегия работает.'; } }] },
+  burn: { t: 'Усталость накрыла', x: 'Всё бесит, учебники не открываются, хочется только спать.', o: [
+    { l: 'Взять выходной без чувства вины', r: () => { S.st.energy += 25; return 'Перезагрузка. Энергия +25.'; } },
+    { l: 'Собраться и дотерпеть', r: () => { S.st.energy += 5; gain('bio', 2); return 'Получилось, но на силе воли далеко не уехать.'; } }] },
+  gto: { t: 'Нормы ГТО', x: 'В школе принимают нормы ГТО. Золотой значок дает баллы при поступлении во многие вузы.', o: [
+    { l: 'Сдавать', r: () => { S.st.energy -= 8; if (Math.random() < 0.7) { S.st.id = Math.min(10, S.st.id + 2); return 'Золотой значок! +2 балла за достижения.'; } return 'Не хватило пары повторений. Зато размялись.'; } },
+    { l: 'Пропустить', r: () => 'Силы сэкономлены.' }] }
+};
+
+function scSchool() {
+  const m = MONTHS[S.month];
+  const slots = [0, 1, 2].map(i => {
+    const a = SCHOOL_ACTS.find(x => x.id === S.picks[i]);
+    return `<button class="slot ${a ? 'filled' : ''}" data-a="unpick" data-v="${i}" ${a ? '' : 'disabled'} aria-label="${a ? 'Убрать: ' + esc(a.t) : 'Свободный слот'}">${a ? esc(a.t) : 'свободно'}</button>`;
+  }).join('');
+  const full = S.picks.length >= 3;
+  const acts = SCHOOL_ACTS.map(a => `<button class="act" data-a="pick" data-v="${a.id}" ${full ? 'disabled' : ''}>
+      <span class="act-t">${a.t}</span><span class="act-d">${a.d}</span>
+      <span class="act-e ${a.e > 0 ? 'pos' : ''}">${a.e > 0 ? '+' : '−'}${Math.abs(a.e)} энергии</span></button>`).join('');
+  return `<p class="eyebrow">Глава 1 · ${S.gapYear ? 'Год подготовки' : '11 класс'} · месяц ${S.month + 1} из 9</p>
+    <h1>${m}</h1>
+    <p class="lead">Цель — бюджет ПСПбГМУ им. Павлова, стоматология. В игре проходной ${BUDGET_PASS} балла по трём ЕГЭ плюс индивидуальные достижения.</p>
+    <div class="skills">${bar('Химия', S.st.chem)}${bar('Биология', S.st.bio)}${bar('Русский', S.st.rus)}</div>
+    <h3>План на месяц — 3 дела</h3>
+    <div class="slots">${slots}</div>
+    <div class="acts">${acts}</div>
+    ${S.st.energy < 25 ? '<div class="note bad">Энергии мало: учёба даёт вдвое меньше. Добавь «Выспаться».</div>' : ''}
+    <button class="primary" data-a="endMonth" ${full ? '' : 'disabled'}>Прожить ${m.toLowerCase()}</button>`;
+}
+function bar(label, v, gold) {
+  return `<div class="skill ${gold ? 'gold' : ''}"><span>${label}</span><div class="track"><span style="width:${clamp(v, 0, 100)}%"></span></div><b>${Math.round(v)}</b></div>`;
+}
+function endMonth() {
+  const notes = [];
+  S.picks.forEach(id => {
+    const a = SCHOOL_ACTS.find(x => x.id === id);
+    S.st.energy = clamp(S.st.energy + a.e, 0, 100);
+    const r = a.run();
+    if (r) notes.push(r);
+  });
+  S.st.energy = clamp(S.st.energy + 6, 0, 100);
+  notes.forEach(n => log(n));
+  S.picks = [];
+  // pick event
+  let id = null;
+  if (S.month === 3) id = 'essay';
+  else if (S.st.energy < 25 && !S.usedEv.includes('burn')) id = 'burn';
+  else {
+    const pool = Object.keys(SCHOOL_EVENTS).filter(k => k !== 'essay' && !S.usedEv.includes(k));
+    if (pool.length) id = pickOne(pool);
+  }
+  if (id === 'essay' && S.gapYear) id = null;
+  if (id) { S.usedEv.push(id); S.ev = { set: 'school', id, next: 'school', res: null }; S.scene = 'event'; }
+  else afterSchoolMonth();
+}
+function afterSchoolMonth() {
+  S.month++;
+  if (S.month >= 9) { calcEge(); S.scene = 'ege'; }
+  else S.scene = 'school';
+}
+
+/* generic event scene */
+const EVENT_SETS = { school: SCHOOL_EVENTS };
+function scEvent() {
+  const ev = EVENT_SETS[S.ev.set][S.ev.id];
+  const res = S.ev.res;
+  return `<p class="eyebrow">Событие</p><h1>${ev.t}</h1><p class="lead">${ev.x}</p>
+    <div class="opts">${ev.o.map((o, i) => `<button class="opt" data-a="evPick" data-v="${i}" ${res ? 'disabled' : ''}>${o.l}</button>`).join('')}</div>
+    ${res ? `<div class="note good">${esc(res)}</div><button class="primary" data-a="evNext">Дальше</button>` : ''}`;
+}
+
+/* EGE */
+function calcEge() {
+  const sc = k => clamp(Math.round(S.st[k] + 3 + rnd(-4, 4)), 20, 100);
+  const chem = sc('chem'), bio = sc('bio'), rus = sc('rus');
+  let id = S.st.id;
+  const honors = S.st.chem >= 80 && S.st.bio >= 80 && S.st.rus >= 80;
+  if (honors) id = Math.min(10, id + 5);
+  S.ege = { chem, bio, rus, id, honors, total: chem + bio + rus + id };
+}
+function scEge() {
+  const e = S.ege, pass = e.total >= BUDGET_PASS, target = e.total >= 250;
+  return `<p class="eyebrow">Июнь · ЕГЭ</p><h1>${pass ? 'Бюджет!' : 'Результаты ЕГЭ'}</h1>
+    <div class="panel"><table class="res">
+      <tr><td>Химия</td><td>${e.chem}</td></tr>
+      <tr><td>Биология</td><td>${e.bio}</td></tr>
+      <tr><td>Русский язык</td><td>${e.rus}</td></tr>
+      <tr><td>Индивидуальные достижения${e.honors ? ' (аттестат с отличием)' : ''}</td><td>${e.id}</td></tr>
+      <tr class="total"><td>Сумма · проходной ${BUDGET_PASS}</td><td>${e.total}</td></tr>
+    </table></div>
+    ${pass ? `<p class="lead" style="margin-top:14px">Ты в приказе на зачисление: ПСПбГМУ им. акад. И. П. Павлова, специальность «Стоматология», бюджет. Пора собирать чемодан в Петербург.</p>
+      <button class="primary" data-a="ege" data-v="budget">Переезд в Питер</button>`
+    : `<p class="lead" style="margin-top:14px">До бюджета не хватило ${BUDGET_PASS - e.total}. Как и в жизни, вариантов несколько.</p>
+      <div class="opts">
+        ${target ? '<button class="opt" data-a="ege" data-v="target"><b>Целевое обучение.</b> Бюджет по договору с клиникой, после выпуска 30 рабочих дней в игре с зарплатой ниже рынка.</button>' : ''}
+        <button class="opt" data-a="ege" data-v="paid"><b>Платное отделение.</b> Учёба в Павлова за деньги, в игре это долг 3 000 000 ₽.</button>
+        <button class="opt" data-a="ege" data-v="retry"><b>Ещё год подготовки.</b> Навыки сохраняются, сдаёшь заново через год.</button>
+      </div>`}`;
+}
+function egeChoice(v) {
+  if (v === 'retry') {
+    S.gapYear = true; S.ageBase += 1; S.month = 0; S.usedEv = []; S.st.energy = 85;
+    log('Решение: ещё год подготовки. В этот раз всё получится.');
+    S.scene = 'school'; return;
+  }
+  S.admit = v;
+  if (v === 'paid') { S.money -= 3000000; log('Поступление на платное. Долг 3 000 000 ₽ придётся отбивать в практике.', 'b'); }
+  if (v === 'target') { S.target = 30; log('Поступление по целевому договору с клиникой.'); }
+  if (v === 'budget') log('Бюджет в Павлова! Мечта номер один выполнена.', 'g');
+  S.scene = 'uni';
+}
+
+/* ===================== Chapter 2: university ===================== */
+const UNI_ACTS = [
+  { id: 'study', t: 'Учиться на отлично', d: 'Анатомия, гистология, фармакология', min: 1, run: () => { S.uni.know += 12; return 'Теория +12'; } },
+  { id: 'sim', t: 'Фантомный класс', d: 'Препарирование на фантомах, швы', min: 1, run: () => { S.uni.hands += 10; return 'Руки +10'; } },
+  { id: 'sno', t: 'СНО хирургической стоматологии', d: 'Операционная, доклады, наставник', min: 2, run: () => { S.uni.surg += 12; S.uni.hands += 4; S.uni.sno = true; return 'Хирургия +12, руки +4'; } },
+  { id: 'assist', t: 'Ассистент в клинике', d: 'Подработка: работа в четыре руки', min: 3, run: () => { S.uni.hands += 8; S.money += 180000; return 'Руки +8, заработано 180 000 ₽'; } },
+  { id: 'content', t: 'Контент: будни стомата', d: 'TikTok и советы абитуриентам', min: 1, run: () => { post(1.5); post(1.5); return null; } },
+  { id: 'trip', t: 'Лето в Турции', d: 'Море по студенческому бюджету', min: 1, cost: 70000, run: () => { S.money -= 70000; addTrip('Турция'); post(1.2); return 'Турция: −70 000 ₽, штамп в паспорте'; } }
+];
+const QUIZ = [
+  { q: 'Сколько постоянных зубов у взрослого человека вместе с зубами мудрости?', o: ['28', '32', '36', '30'], c: 1, x: '32 постоянных зуба: по 8 в каждом квадранте — 2 резца, клык, 2 премоляра и 3 моляра.' },
+  { q: 'По международной нумерации FDI зуб 36 — это…', o: ['Первый моляр нижней челюсти слева', 'Первый моляр верхней челюсти справа', 'Клык нижней челюсти слева', 'Зуб мудрости нижней челюсти справа'], c: 0, x: 'Первая цифра — квадрант (1 верх-право, 2 верх-лево, 3 низ-лево, 4 низ-право), вторая — номер зуба от центра.' },
+  { q: 'Какой местный анестетик чаще всего используют в современной стоматологии в России?', o: ['Новокаин', 'Артикаин', 'Кетопрофен', 'Парацетамол'], c: 1, x: 'Артикаин (часто с адреналином) — стандарт для инфильтрационной и проводниковой анестезии.' },
+  { q: 'Синус-лифтинг — это наращивание кости в области…', o: ['Верхнечелюстной (гайморовой) пазухи', 'Нижнечелюстного канала', 'Подбородка', 'Височно-нижнечелюстного сустава'], c: 0, x: 'Когда высоты кости под пазухой на верхней челюсти мало, дно пазухи приподнимают и подсаживают костный материал.' },
+  { q: 'Когда обычно ставят коронку на имплант нижней челюсти при классическом двухэтапном протоколе?', o: ['Всегда в тот же день', 'Примерно через 3–4 месяца, после остеоинтеграции', 'Через два года', 'Через неделю'], c: 1, x: 'Имплант должен срастись с костью (остеоинтеграция). На нижней челюсти это обычно около 3–4 месяцев, на верхней дольше.' }
+];
+const UNI_EVENTS = {
+  1: { t: 'Первая сессия', x: 'Анатомия: кости черепа на латыни. Три ночи до экзамена.', o: [
+    { l: 'Зубрить ночами', r: () => { S.uni.know += 6; return 'Сдано на «отлично». Теория +6.'; } },
+    { l: 'Учить по карточкам с группой и снять об этом видео', r: () => { S.uni.know += 3; const g = post(2); return `Сдано. Видео про латынь: +${fmt(g)} подписчиков.`; } }] },
+  2: { t: 'Приглашение на кафедру', x: 'Заведующий кафедрой хирургической стоматологии заметил тебя на практике и зовёт ассистировать на операциях по выходным.', o: [
+    { l: 'Соглашаюсь', r: () => { S.uni.surg += 8; S.uni.sno = true; return 'Первые удаления в роли ассистента. Хирургия +8.'; } },
+    { l: 'Пока рано, сосредоточусь на учёбе', r: () => { S.uni.know += 5; return 'Теория +5.'; } }] },
+  3: { t: 'Предложение от бренда', x: 'Бренд зубных щёток предлагает рекламную интеграцию в твоём TikTok.', o: [
+    { l: 'Беру, но только честный обзор', r: () => { const m = Math.round(clamp(30000 + S.tiktok * 2, 30000, 600000)); S.money += m; post(1.5); return `Интеграция вышла: +${rub(m)}.`; } },
+    { l: 'Отказываюсь: доверие аудитории важнее', r: () => { post(1); return 'Подписчики оценили честность.'; } }] },
+  4: { t: 'Лето с имплантологом', x: 'Известный имплантолог ищет ассистента на лето. Бесплатно, зато опыт.', o: [
+    { l: 'Иду за опытом', r: () => { S.uni.surg += 10; S.uni.hands += 6; return 'Сотня имплантаций в роли ассистента. Хирургия +10, руки +6.'; } },
+    { l: 'Работаю ассистентом за зарплату', r: () => { S.money += 150000; S.uni.hands += 4; return '+150 000 ₽, руки +4.'; } }] },
+  5: { t: 'Выпускная работа', x: 'Пора выбрать тему выпускной работы.', o: [
+    { l: 'Имплантация при атрофии костной ткани', r: () => { S.uni.surg += 6; S.uni.know += 4; return 'Хирургия +6, теория +4.'; } },
+    { l: 'Цифровая стоматология: КТ и хирургические шаблоны', r: () => { S.uni.know += 8; return 'Теория +8.'; } },
+    { l: 'Соцсети и доверие пациентов к стоматологу', r: () => { S.uni.know += 3; post(2); return 'Теория +3, контент на месяц вперёд.'; } }] }
+};
+EVENT_SETS.uni = UNI_EVENTS;
+
+function scUni() {
+  const u = S.uni;
+  if (u.quizDone === false && u.picks === null) return scQuiz();
+  const avail = UNI_ACTS.map(a => {
+    const lock = u.year < a.min ? `с ${a.min} курса` : (a.cost && S.money < a.cost ? 'не хватает денег' : '');
+    const on = u.picks.includes(a.id);
+    return `<button class="act ${on ? 'on' : ''}" data-a="uniPick" data-v="${a.id}" ${lock || (!on && u.picks.length >= 2) ? 'disabled' : ''} aria-pressed="${on}">
+      <span class="act-t">${a.t}</span><span class="act-d">${lock || a.d}</span>${a.cost ? `<span class="act-e money">−${rub(a.cost)}</span>` : ''}</button>`;
+  }).join('');
+  return `<p class="eyebrow">Глава 2 · ПСПбГМУ им. Павлова · ${u.year} курс из 5</p>
+    <h1>${u.year} курс</h1>
+    <p class="lead">Петербург, Петроградская сторона, общежитие и кафедры. Выбери два главных дела этого учебного года.</p>
+    <div class="skills">${bar('Теория', u.know)}${bar('Руки', u.hands)}${bar('Хирургия', u.surg)}</div>
+    <h3>Главное в этом году — 2 дела</h3>
+    <div class="acts">${avail}</div>
+    <button class="primary" data-a="uniEnd" ${u.picks.length === 2 ? '' : 'disabled'}>Прожить ${u.year} курс</button>`;
+}
+function scQuiz() {
+  const u = S.uni, q = QUIZ[u.year - 1], p = u.quizPick;
+  return `<p class="eyebrow">Сессия · ${u.year} курс</p><h1>Экзаменационный билет</h1>
+    <p class="lead">${q.q}</p>
+    <div class="opts">${q.o.map((o, i) => {
+      const cls = p === null ? '' : (i === q.c ? 'right' : (i === p ? 'wrong' : ''));
+      return `<button class="opt ${cls}" data-a="quiz" data-v="${i}" ${p !== null ? 'disabled' : ''}>${o}</button>`;
+    }).join('')}</div>
+    ${p !== null ? `<div class="note ${p === q.c ? 'good' : 'bad'}">${p === q.c ? 'Верно! Теория +6. ' : 'Неверно. '}${q.x}</div>
+      <button class="primary" data-a="quizNext">Дальше</button>` : ''}`;
+}
+function uniEnd() {
+  S.uni.picks.forEach(id => { const r = UNI_ACTS.find(a => a.id === id).run(); if (r) log(r); });
+  S.uni.picks = null; S.uni.quizDone = false; S.uni.quizPick = null;
+}
+function quizAnswer(i) {
+  const q = QUIZ[S.uni.year - 1];
+  S.uni.quizPick = i;
+  if (i === q.c) S.uni.know += 6;
+}
+function quizNext() {
+  S.uni.quizDone = true;
+  S.ev = { set: 'uni', id: S.uni.year, next: 'uni', res: null };
+  S.scene = 'event';
+}
+function afterUniYear() {
+  ['know', 'hands', 'surg'].forEach(k => S.uni[k] = clamp(S.uni[k], 0, 100));
+  if (S.uni.year >= 5) {
+    const sc = clamp(Math.round(S.uni.know * 0.6 + S.uni.hands * 0.4 + 20 + rnd(-5, 5)), 0, 100);
+    S.accred = sc; S.scene = 'accred'; return;
+  }
+  S.uni.year++; S.uni.picks = []; S.uni.quizDone = true; S.scene = 'uni';
+}
+function scAccred() {
+  const pass = S.accred >= 50;
+  return `<p class="eyebrow">Выпуск · первичная аккредитация</p><h1>${pass ? 'Диплом врача-стоматолога' : 'Аккредитация'}</h1>
+    <div class="panel"><table class="res">
+      <tr><td>Тестирование</td><td>${pass ? 'сдано' : 'сдано'}</td></tr>
+      <tr><td>Практические навыки (станции ОСКЭ)</td><td>${pass ? 'сдано' : 'пересдача'}</td></tr>
+      <tr class="total"><td>Итог</td><td>${S.accred}%</td></tr>
+    </table></div>
+    <p class="lead" style="margin-top:14px">${pass ? 'После аккредитации уже можно работать стоматологом общей практики. Хирургия и имплантология — через ординатуру.' : 'Не хватило практики на станциях. Месяц тренировок на фантомах — и пересдача.'}</p>
+    <button class="primary" data-a="accredNext">${pass ? 'Что дальше?' : 'Пересдать'}</button>`;
+}
+function residBudget() { return (S.uni.sno && S.uni.surg >= 25) || S.uni.know >= 85; }
+function scResid() {
+  const b = residBudget();
+  return `<p class="eyebrow">Развилка</p><h1>Ординатура или работа?</h1>
+    <p class="lead">Ординатура по хирургической стоматологии длится 2 года и открывает удаления, а потом курсы имплантологии. Можно сразу пойти работать и вернуться к ней позже.</p>
+    <div class="opts">
+      <button class="opt" data-a="resid" data-v="surg"><b>Ординатура: стоматология хирургическая.</b> ${b ? 'Бюджетное место: помогли СНО и баллы аккредитации.' : 'Платное место: 1 200 000 ₽ за два года.'} 30 рабочих дней в игре с зарплатой ординатора.</button>
+      <button class="opt" data-a="resid" data-v="gp"><b>Стоматолог общей практики.</b> Сразу зарплата и пациенты: кариес, пульпиты, эстетика. Ординатура остаётся доступной позже.</button>
+    </div>`;
+}
+function startPractice(path) {
+  if (path === 'surg') enterResid(); else { S.path = 'gp'; log('Первый рабочий день стоматологом общей практики.', 'g'); }
+  S.skill = Math.round(S.uni.hands * 0.5 + S.uni.surg * 0.3);
+  S.st.energy = 90; S.day = 0; S.scene = 'hub';
+}
+function enterResid() {
+  const b = S.path === 'gp' ? S.rep >= 20 : residBudget();
+  if (!b) { S.money -= 1200000; log('Ординатура на платной основе: −1 200 000 ₽.', 'b'); }
+  else log('Бюджетное место в ординатуре по хирургической стоматологии!', 'g');
+  S.path = 'surg'; S.resid = 30;
+}
+
+/* ===================== Chapter 3: practice ===================== */
+const TONES = {
+  warm: 'Здравствуйте! Присаживайтесь, расскажите спокойно, что беспокоит. Мы никуда не спешим.',
+  clear: 'Здравствуйте. Давайте по порядку: что, где и с какого момента беспокоит?',
+  joke: 'Здравствуйте! Обещаю, кресло не кусается. Что у нас случилось?'
+};
+const IMG = { none: 'Без снимка', peri: 'Прицельный снимок', opg: 'Панорамный снимок (ОПТГ)', ct: 'КТ' };
+const CASES = [
+  { id: 'pulpit', need: 'gp', name: 'Марина', age: 34, tone: 'clear',
+    c: 'Третью ночь не сплю. Зуб наверху слева болит приступами, отдаёт в висок. От холодной воды болит и долго не отпускает.',
+    q: [ { q: 'Когда впервые заболело?', a: 'Недели две назад реагировал на сладкое, а три дня назад начались ночные боли.' },
+         { q: 'Есть аллергия на лекарства или анестезию?', a: 'Нет, анестезию раньше делали, всё было хорошо.', key: 1 },
+         { q: 'Боль постоянная или приступами?', a: 'Приступами по 10–20 минут, потом немного отпускает.' },
+         { q: 'Принимаете что-то постоянно?', a: 'Только витамины.' } ],
+    tooth: [26], teeth: { 26: 'caries', 16: 'filling', 36: 'filling' }, exam: 'глубокая кариозная полость, зондирование дна резко болезненно.',
+    img: { ok: ['peri'], half: ['opg', 'ct'] },
+    find: { none: 'Без снимка не оценить глубину поражения и каналы.', peri: 'Глубокая полость в 26 близко к пульпе. У верхушек корней изменений нет.', opg: 'На панораме видна глубокая полость в 26, но детали корней хуже различимы.', ct: 'То же, что на прицельном снимке, только дороже и с большей лучевой нагрузкой.' },
+    dx: ['Средний кариес 26', 'Острый пульпит 26', 'Хронический периодонтит 26', 'Острый гайморит'], dxc: 1,
+    plan: ['Удалить 26', 'Анестезия, лечение каналов 26, затем восстановление вкладкой или коронкой', 'Назначить антибиотики, прийти через неделю', 'Поставить пломбу без лечения каналов'], pc: 1,
+    x: 'Ночные приступообразные боли с иррадиацией и долгой реакцией на холод — классика острого пульпита. Зуб сохраняют: лечат каналы.', fee: 22000 },
+  { id: 'fear', need: 'gp', name: 'Алина', age: 27, tone: 'warm', fearful: true,
+    c: 'Я очень боюсь стоматологов, не была семь лет… На переднем зубе тёмное пятно, стыдно улыбаться.',
+    q: [ { q: 'Чего именно вы боитесь?', a: 'Боли. В детстве лечили без анестезии, до сих пор помню.', key: 1 },
+         { q: 'Зуб болит?', a: 'Нет, иногда реагирует на сладкое.' },
+         { q: 'Аллергия на анестезию была?', a: 'Не знаю… в детстве её не делали.' },
+         { q: 'Есть хронические заболевания?', a: 'Нет.' } ],
+    tooth: [11], teeth: { 11: 'caries', 22: 'filling' }, exam: 'кариозная полость средней глубины на контактной поверхности.',
+    img: { ok: ['peri', 'none'], half: ['opg'] },
+    find: { none: 'По клинической картине кариес средний, прицельный снимок здесь по желанию.', peri: 'Полость средней глубины в 11, до пульпы далеко.', opg: 'На панораме передние зубы видны плохо, но крупных проблем нет.', ct: 'КТ ради кариеса — избыточно.' },
+    dx: ['Средний кариес 11', 'Острый пульпит 11', 'Флюороз', 'Перелом коронки 11'], dxc: 0,
+    plan: ['Объяснить каждый шаг, хорошая анестезия, художественная реставрация 11 композитом, договориться о «стоп-сигнале» рукой', 'Сразу виниры на 8 зубов', 'Удалить 11 и поставить имплант', 'Лечить без анестезии, там неглубоко'], pc: 0,
+    x: 'Тревожному пациенту важнее всего контроль и предсказуемость: объяснять, обезболивать, давать «стоп-сигнал». Сам кариес лечится одной реставрацией.', fee: 14000 },
+  { id: 'alveo', need: 'gp', name: 'Сергей', age: 45, tone: 'clear',
+    c: 'Три дня назад в другой клинике удалили зуб внизу слева. Сначала было нормально, а теперь болит всё сильнее, отдаёт в ухо. И неприятный запах.',
+    q: [ { q: 'Как ухаживали за лункой после удаления?', a: 'Активно полоскал, чтобы всё промыть. И курил, конечно.', key: 1 },
+         { q: 'Температура есть?', a: 'Около 37,2.' },
+         { q: 'Принимаете лекарства?', a: 'Только обезболивающие, уже почти не помогают.' },
+         { q: 'Удаление было сложным?', a: 'Долго, зуб распиливали на части.' } ],
+    tooth: [37], teeth: { 37: 'socket', 36: 'filling', 47: 'filling' }, exam: 'лунка без кровяного сгустка, серый налёт, резкая боль при касании.',
+    img: { ok: ['peri', 'opg'], half: ['ct'] },
+    find: { none: 'Без снимка не исключить оставшийся фрагмент корня.', peri: 'В лунке 37 нет остатков корня и инородных тел.', opg: 'В лунке 37 нет остатков корня, соседние зубы без изменений.', ct: 'Остатков корня нет. КТ здесь избыточна.' },
+    dx: ['Альвеолит лунки 37', 'Острый пульпит 36', 'Перелом нижней челюсти', 'Перикоронит 38'], dxc: 0,
+    plan: ['Под анестезией бережно очистить и промыть лунку антисептиком, лечебная повязка, обезболивание, контроль через 1–2 дня', 'Зашить лунку наглухо', 'Только антибиотики, без местного лечения', 'Удалить соседний 36'], pc: 0,
+    x: 'Альвеолит часто возникает, когда сгусток вымывают полосканиями или курением. Лечение местное: очистить лунку и защитить её повязкой.', fee: 6000 },
+  { id: 'veneers', need: 'gp', name: 'Виктория', age: 24, tone: 'joke',
+    c: 'Я блогер, хочу голливудскую улыбку — виниры на все двадцать зубов! Зубы ровные, просто хочется белее.',
+    q: [ { q: 'Что именно не нравится в улыбке?', a: 'Цвет. Форма вроде нормальная.', key: 1 },
+         { q: 'Отбеливание пробовали?', a: 'Нет, не пробовала.' },
+         { q: 'Скрипите зубами по ночам?', a: 'Говорят, что да, особенно перед съёмками.', key: 1 },
+         { q: 'Какой бюджет?', a: 'Неважно, хочу как у звёзд!' } ],
+    tooth: [11, 21], teeth: { 11: 'stain', 21: 'stain', 12: 'stain', 22: 'stain' }, exam: 'эмаль целая, лёгкая желтизна, стёртость режущих краёв.', examAsk: 'Попроси показать, какой зуб не нравится больше всего.',
+    img: { ok: ['none', 'opg'], half: ['peri'] },
+    find: { none: 'Зубы клинически здоровы, снимок для консультации по цвету не обязателен.', peri: 'Здоровый зуб, изменений нет.', opg: 'Скрытого кариеса и воспалений нет.', ct: 'КТ ради цвета зубов не нужна.' },
+    dx: ['Зубы здоровы, эстетический запрос по цвету, признаки бруксизма', 'Множественный кариес', 'Флюороз тяжёлой степени', 'Пародонтит'], dxc: 0,
+    plan: ['Профгигиена и профессиональное отбеливание, капа от бруксизма; при желании позже минимально инвазивные реставрации', 'Сразу 20 виниров с обточкой', 'Коронки на все зубы', 'Отказать без объяснений'], pc: 0,
+    x: 'Обтачивать здоровые зубы ради цвета избыточно, а при бруксизме виниры чаще скалываются. Честная консультация приносит доверие и подписчиков.', fee: 35000 },
+  { id: 'extract', need: 'surg', name: 'Игорь Петрович', age: 61, tone: 'warm', risk: 'После удаления — длительное кровотечение: пациент принимает варфарин, а вопрос о лекарствах не прозвучал. Пришлось срочно ушивать лунку.',
+    c: 'Зуб внизу слева совсем развалился. Больно кусать, десна опухла.',
+    q: [ { q: 'Какие лекарства принимаете постоянно?', a: 'После операции на сердце пью варфарин. И таблетки от давления.', key: 1 },
+         { q: 'Давно болит?', a: 'Ныть начал месяц назад, а последние дни больно накусывать.' },
+         { q: 'Были проблемы после удалений раньше?', a: 'Лет десять назад удаляли — кровило долго.' },
+         { q: 'Курите?', a: 'Бросил пять лет назад.' } ],
+    tooth: [36], teeth: { 36: 'destroyed', 47: 'crown', 26: 'filling' }, exam: 'коронка разрушена ниже уровня десны, перкуссия болезненна.',
+    img: { ok: ['peri', 'opg'], half: ['ct'] },
+    find: { none: 'Без снимка не оценить корни и кость перед удалением.', peri: 'Коронка 36 разрушена, у верхушек корней очаги разрежения кости.', opg: 'Корни 36 с очагами разрежения у верхушек, остальные зубы без острых проблем.', ct: 'Очаги у корней 36. Для удаления КТ необязательна.' },
+    dx: ['Острый пульпит 36', 'Хронический периодонтит 36 в стадии обострения, зуб не подлежит восстановлению', 'Перикоронит 38', 'Альвеолит 36'], dxc: 1,
+    plan: ['Удалить 36 сегодня без дополнительных обследований', 'С учётом анамнеза: анализ МНО и согласование с кардиологом, удаление 36 с гемостатической губкой и швами, позже обсудить имплант', 'Посоветовать самому бросить варфарин на неделю', 'Оставить зуб и пить обезболивающие'], pc: 1,
+    x: 'Варфарин — антикоагулянт. Отменять его самостоятельно опасно (риск тромбоза), поэтому удаление планируют по МНО вместе с кардиологом и тщательно останавливают кровь.', fee: 15000 },
+  { id: 'wisdom', need: 'surg', name: 'Даниил', age: 22, tone: 'joke',
+    c: 'Внизу справа, за последним зубом, всё распухло. Больно глотать, и рот открывается с трудом.',
+    q: [ { q: 'Температура есть?', a: 'Вчера было 37,6.' },
+         { q: 'Раньше такое было?', a: 'Пару раз за год припухало, но проходило само.' },
+         { q: 'Аллергия на антибиотики есть?', a: 'Вроде нет, амоксициллин пил нормально.', key: 1 },
+         { q: 'Нижние зубы мудрости прорезались?', a: 'Сверху да, а снизу как будто застрял.' } ],
+    tooth: [48], teeth: { 48: 'impacted', 38: 'impacted', 46: 'filling' }, exam: 'над 48 отёчный «капюшон» десны, из-под него гной.',
+    img: { ok: ['opg', 'ct'], half: ['peri'] },
+    find: { none: 'Без снимка не понять положение корней зуба мудрости.', peri: 'Видна только часть 48, корни не помещаются в кадр.', opg: '48 наклонён вперёд и частично прикрыт десной. Корни близко к нижнечелюстному каналу — перед удалением нужна КТ.', ct: 'КТ: 48 упирается в 47, корни рядом с каналом нижнечелюстного нерва.' },
+    dx: ['Острый пульпит 47', 'Острый перикоронит в области дистопированного 48', 'Альвеолит 48', 'Флегмона дна полости рта'], dxc: 1,
+    plan: ['Удалить 47, чтобы освободить место', 'Снять острое воспаление (рассечь капюшон, промыть, назначить лечение), затем плановое удаление 48 по КТ', 'Ничего не делать, пройдёт само', 'Срочно удалить все четыре зуба мудрости без снимков'], pc: 1,
+    x: 'При перикороните сначала снимают острое воспаление, потом планово удаляют зуб мудрости. КТ показывает, насколько близко корни к нерву.', fee: 18000 },
+  { id: 'implant', need: 'implant', name: 'Ольга Сергеевна', age: 48, tone: 'clear', risk: 'Через два месяца имплант не прижился: пациентка много курит, а этот риск никто не обсудил.',
+    c: 'Два года назад удалили зуб внизу справа. Жевать неудобно, соседние зубы начали наклоняться. Хочу имплант.',
+    q: [ { q: 'Курите?', a: 'Да, около пачки в день.', key: 1 },
+         { q: 'Есть диабет или другие хронические болезни?', a: 'Нет, недавно сдавала анализы, всё в норме.', key: 1 },
+         { q: 'Почему удалили зуб?', a: 'Был сильно разрушен, лечить не стали.' },
+         { q: 'Чего ждёте от лечения?', a: 'Нормально жевать и не обтачивать соседние зубы.' } ],
+    tooth: [46], teeth: { 46: 'missing', 36: 'filling', 17: 'crown' }, exam: 'зуба нет, гребень сужен, 47 немного наклонён в сторону дефекта.',
+    img: { ok: ['ct'], half: ['opg'] },
+    find: { none: 'Ставить имплант без снимка нельзя.', peri: 'Прицельный снимок не покажет ширину кости.', opg: 'Панорама показывает дефект, но не ширину кости. Для импланта нужна КТ.', ct: 'КТ: ширина кости в области 46 — 7 мм, высота над нижнечелюстным каналом — 13 мм. Объёма достаточно.' },
+    dx: ['Частичная вторичная адентия: нет 46, объём кости достаточный', 'Хронический периодонтит 46', 'Нужен синус-лифтинг', 'Пародонтит тяжёлой степени'], dxc: 0,
+    plan: ['Имплантация 46 по КТ, лучше с хирургическим шаблоном; разговор о курении; коронка через 3–4 месяца', 'Мост с обточкой здоровых 45 и 47', 'Съёмный протез', 'Имплант сегодня без КТ, на глаз'], pc: 0,
+    x: 'Курение заметно повышает риск неудачи имплантации, поэтому его обсуждают до операции. КТ нужна, чтобы выбрать размер импланта и не задеть нерв.', fee: 85000 },
+  { id: 'sinus', need: 'sinus', name: 'Тимур', age: 39, tone: 'joke', risk: 'Через месяц после операции — обострение гайморита. ЛОР-анамнез не собрали, пришлось лечить вместе с ЛОР-врачом.',
+    c: 'Сверху справа нет жевательного зуба лет пять. Хочу имплант, но в другой клинике сказали, что «кости нет».',
+    q: [ { q: 'Были гаймориты или проблемы с носом?', a: 'Нет, ЛОР недавно смотрел — всё чисто.', key: 1 },
+         { q: 'Курите?', a: 'Нет.' },
+         { q: 'Принимаете что-то постоянно?', a: 'Нет.' },
+         { q: 'Какие сроки удобны?', a: 'Готов подождать, лишь бы надёжно.' } ],
+    tooth: [16], teeth: { 16: 'missing', 26: 'crown', 46: 'filling' }, exam: 'зуба нет давно, гребень низкий.',
+    img: { ok: ['ct'], half: ['opg'] },
+    find: { none: 'Без КТ планировать нельзя.', peri: 'Прицельный снимок не покажет пазуху целиком.', opg: 'Пазуха близко к гребню, но точную высоту кости не оценить. Нужна КТ.', ct: 'КТ: высота кости под верхнечелюстной пазухой в области 16 — 4 мм. Слизистая пазухи без воспаления.' },
+    dx: ['Нет 16, высота кости 4 мм — мало для стандартного импланта', 'Острый гайморит', 'Нет 16, кости достаточно', 'Хронический пульпит 17'], dxc: 0,
+    plan: ['Открытый синус-лифтинг с костным материалом и имплантация 16 — одномоментно или через 4–6 месяцев', 'Поставить имплант 10 мм прямо сейчас', 'Отказать: «кости нет, ничего не сделать»', 'Удалить 15 и 17 и сделать мост'], pc: 0,
+    x: 'При 4 мм кости под пазухой стандартный имплант не встанет надёжно. Синус-лифтинг поднимает дно пазухи и даёт объём под имплант.', fee: 140000 }
+];
+function caseAvailable(c) {
+  if (c.need === 'gp') return true;
+  if (c.need === 'surg') return S.path === 'surg';
+  if (c.need === 'implant') return S.courses.implant;
+  if (c.need === 'sinus') return S.courses.sinus;
+  return false;
+}
+function title() {
+  if (S.path === 'surg') {
+    if (S.resid > 0) return 'Ординатор-хирург';
+    return S.courses.implant ? 'Стоматолог-хирург, имплантолог' : 'Стоматолог-хирург';
+  }
+  return 'Стоматолог общей практики';
+}
+function priceMult() { return (1 + S.rep / 40 + S.style * 0.03) * (S.resid > 0 ? 0.35 : 1) * (S.target > 0 ? 0.6 : 1); }
+function routine() { return 6000 + S.skill * 700; }
+function clinicIncome() { return S.clinics * 450000 * (1 + S.mentees * 0.04); }
+function clinicCost() { return S.clinics === 0 ? 12000000 : 30000000; }
+function clinicReq() {
+  if (S.clinics === 0) return { rep: 35, mentees: 0 };
+  return { rep: 60, mentees: S.clinics * 2 };
+}
+function nextDay(n) {
+  for (let i = 0; i < (n || 1); i++) {
+    S.day++;
+    S.money += clinicIncome();
+    S.st.energy = clamp(S.st.energy + 5, 0, 100);
+    if (S.resid > 0) { S.resid--; if (S.resid === 0) { S.residDone = true; log('Ординатура окончена! Теперь ты стоматолог-хирург.', 'g'); } }
+    if (S.target > 0) { S.target--; if (S.target === 0) log('Целевой договор отработан. Зарплата теперь по рынку.', 'g'); }
+  }
+  S.contentToday = false;
+}
+
+function hubActions() {
+  const A = [];
+  const req = clinicReq();
+  A.push({ a: 'case', t: 'Принять пациента', d: 'Разобрать сложный случай дня', e: '−18 энергии', dis: S.st.energy < 18 ? 'нужно больше энергии' : '' });
+  A.push({ a: 'week', t: 'Неделя потоком', d: '5 дней приёма без разборов', e: '−35 энергии', dis: S.st.energy < 35 ? 'нужно больше энергии' : '' });
+  A.push({ a: 'content', t: 'Снять контент', d: S.tgOn ? 'TikTok и пост в Telegram' : 'Разбор случая для TikTok', e: '−8 энергии', dis: S.contentToday ? 'сегодня уже снято' : (S.st.energy < 8 ? 'нет сил' : '') });
+  A.push({ a: 'rest', t: 'Выходной', d: 'Сон, прогулка по набережной', e: '+40 энергии', pos: 1 });
+  const treat = 150000 * (S.style + 1);
+  A.push({ a: 'treat', t: S.style < 5 ? 'Шопинг и ресторан' : 'Ужин в любимом ресторане', d: S.style < 5 ? `Гардероб ${S.style + 1} из 5: лучше контент и доверие` : 'Стиль на максимуме', e: '−' + rub(S.style < 5 ? treat : 60000), money: 1, dis: S.money < (S.style < 5 ? treat : 60000) ? 'не хватает денег' : '' });
+  A.push({ a: 'tripMenu', t: 'Путешествие', d: 'Неделя отдыха, полный запас энергии', e: 'от 250 000 ₽', money: 1, dis: S.money < 250000 ? 'не хватает денег' : '' });
+  if (!S.tgOn) A.push({ a: 'tg', t: 'Запустить Telegram-канал', d: 'Разборы случаев и закулисье клиники', e: 'TikTok от 3 000', dis: S.tiktok < 3000 ? 'нужно 3 000 в TikTok' : '' });
+  if (S.path === 'gp') A.push({ a: 'residLater', t: 'Поступить в ординатуру', d: 'Хирургическая стоматология, 2 года', e: S.rep >= 20 ? 'бюджет: репутация 20+' : '−1 200 000 ₽', money: 1, dis: S.rep < 20 && S.money < 1200000 ? 'нужно 1,2 млн ₽ или репутация 20' : '' });
+  if (S.path === 'surg' && !S.courses.implant) A.push({ a: 'course', v: 'implant', t: 'Курс имплантологии', d: 'Открывает пациентов на импланты', e: '−350 000 ₽', money: 1, dis: S.resid > 0 ? 'после ординатуры' : (S.money < 350000 ? 'не хватает денег' : '') });
+  if (S.courses.implant && !S.courses.sinus) A.push({ a: 'course', v: 'sinus', t: 'Синус-лифтинг и костная пластика', d: 'Сложные случаи с атрофией кости', e: '−500 000 ₽', money: 1, dis: S.money < 500000 ? 'не хватает денег' : '' });
+  A.push({ a: 'clinic', t: S.clinics === 0 ? 'Открыть свою клинику' : `Открыть филиал №${S.clinics + 1}`, d: `Репутация ${req.rep}+${req.mentees ? `, учеников ${req.mentees}+` : ''}`, e: '−' + rub(clinicCost()), money: 1,
+    dis: S.path === 'gp' && S.clinics === 0 && S.rep < req.rep ? `репутация ${req.rep}+` : (S.rep < req.rep ? `репутация ${req.rep}+` : (S.mentees < req.mentees ? `нужно учеников: ${req.mentees}` : (S.money < clinicCost() ? 'не хватает денег' : ''))) });
+  if (S.clinics > 0) A.push({ a: 'mentor', t: 'Взять ученика', d: 'Обучить молодого специалиста', e: '−15 энергии', dis: S.st.energy < 15 ? 'нужно больше энергии' : '' });
+  return A;
+}
+function scHub() {
+  if (ui.tripMenu) return scTrips();
+  const acts = hubActions().map(x => `<button class="act" data-a="${x.a}" ${x.v ? `data-v="${x.v}"` : ''} ${x.dis ? 'disabled' : ''}>
+      <span class="act-t">${x.t}</span><span class="act-d">${x.dis ? 'Пока закрыто: ' + x.dis : x.d}</span>
+      <span class="act-e ${x.pos ? 'pos' : ''} ${x.money ? 'money' : ''}">${x.e}</span></button>`).join('');
+  const inc = clinicIncome();
+  return `<p class="eyebrow">Глава 3 · Практика · день ${S.day + 1}</p>
+    <h1>${title()}</h1>
+    <p class="lead">Санкт-Петербург. ${S.resid > 0 ? `До конца ординатуры ${S.resid} раб. дней — зарплата пока скромная.` : (S.target > 0 ? `Целевой договор: ещё ${S.target} раб. дней.` : 'Каждый день — выбор: пациенты, контент, отдых или бизнес.')}</p>
+    <div class="status">
+      <div class="stat"><i>Мастерство</i><b>${Math.round(S.skill)} / 100</b></div>
+      <div class="stat"><i>Репутация</i><b>${Math.round(S.rep)} / 100</b></div>
+      <div class="stat"><i>Клиники · ученики</i><b>${S.clinics} · ${S.mentees}</b></div>
+      <div class="stat"><i>Доход клиник в день</i><b>${inc ? rub(inc) : '—'}</b></div>
+    </div>
+    <h3>Чем займёмся?</h3>
+    <div class="acts">${acts}</div>`;
+}
+const TRIPS = [['Турция', 250000], ['Таиланд', 450000], ['Дубай', 600000], ['Италия', 700000], ['Япония', 900000], ['Бали', 500000]];
+function scTrips() {
+  return `<p class="eyebrow">Путешествие · 7 дней</p><h1>Куда летим?</h1>
+    <p class="lead">Неделя отдыха: энергия на максимум, тревел-влог для TikTok. Клиники в это время работают.</p>
+    <div class="acts">${TRIPS.map(([p, c]) => `<button class="act" data-a="trip" data-v="${p}" ${S.money < c ? 'disabled' : ''}>
+      <span class="act-t">${p}</span><span class="act-d">${S.trips.includes(p) ? 'Уже есть штамп, можно снова' : 'Новый штамп в паспорте'}</span><span class="act-e money">−${rub(c)}</span></button>`).join('')}</div>
+    <button class="secondary" data-a="tripBack">Остаться в Питере</button>`;
+}
+
+/* case flow */
+const STEPS = ['greet', 'ask', 'exam', 'img', 'dx', 'plan', 'done'];
+function startCase() {
+  const pool = CASES.filter(caseAvailable);
+  let opts = pool.filter(c => c.id !== S.lastCase);
+  const fresh_ = opts.filter(c => ['implant', 'sinus', 'extract', 'wisdom'].includes(c.id));
+  const c = (fresh_.length && Math.random() < 0.55) ? pickOne(fresh_) : pickOne(opts.length ? opts : pool);
+  S.lastCase = c.id;
+  S.cs = { id: c.id, step: 'greet', tone: null, asked: [], wrong: [], found: false, img: null, dx: null, plan: null, order: { dx: shuffle(c.dx.map((_, i) => i)), plan: shuffle(c.plan.map((_, i) => i)) }, chat: [{ w: 'p', t: c.c }], result: null };
+  S.st.energy = clamp(S.st.energy - 18, 0, 100);
+  S.scene = 'case';
+}
+function cs() { return CASES.find(c => c.id === S.cs.id); }
+function scCase() {
+  const c = cs(), st = S.cs;
+  const si = STEPS.indexOf(st.step);
+  const chat = st.chat.map(m => m.w === 'f' ? `<div class="msg f"><b>${esc(m.h)}</b>${esc(m.t)}</div>` : `<div class="msg ${m.w}">${esc(m.t)}</div>`).join('');
+  let ctl = '';
+  if (st.step === 'greet') {
+    ctl = `<h3>Как начнёшь разговор?</h3><div class="opts">
+      <button class="opt" data-a="tone" data-v="warm">Тепло: «${TONES.warm}»</button>
+      <button class="opt" data-a="tone" data-v="clear">По делу: «${TONES.clear}»</button>
+      <button class="opt" data-a="tone" data-v="joke">С юмором: «${TONES.joke}»</button></div>`;
+  } else if (st.step === 'ask') {
+    const left = c.q.map((q, i) => st.asked.includes(i) ? '' : `<button class="opt" data-a="ask" data-v="${i}">${esc(q.q)}</button>`).join('');
+    ctl = `<h3>Сбор анамнеза</h3><div class="opts">${left || '<div class="note">Все вопросы заданы.</div>'}</div>
+      <button class="primary" data-a="toExam">Перейти к осмотру</button>`;
+  } else if (st.step === 'exam') {
+    ctl = `<h3>Осмотр полости рта</h3><p class="lead" style="margin-bottom:8px">${c.examAsk || 'Найди зуб, на который жалуется пациент, и нажми на него.'}</p>
+      <div class="chart-box">${chart(c.teeth, true)}</div>
+      <p class="legend">Схема по FDI, вид со стороны врача: слева на схеме — правая сторона пациента.</p>
+      ${st.found ? '<button class="primary" data-a="toImg">К диагностике</button>' : ''}`;
+  } else if (st.step === 'img') {
+    ctl = `<h3>Какое исследование назначить?</h3><div class="opts">${Object.keys(IMG).map(k => `<button class="opt" data-a="img" data-v="${k}">${IMG[k]}</button>`).join('')}</div>`;
+  } else if (st.step === 'dx') {
+    ctl = `<h3>Диагноз</h3><div class="opts">${st.order.dx.map(i => `<button class="opt" data-a="dx" data-v="${i}">${esc(c.dx[i])}</button>`).join('')}</div>`;
+  } else if (st.step === 'plan') {
+    ctl = `<h3>План лечения</h3><div class="opts">${st.order.plan.map(i => `<button class="opt" data-a="plan" data-v="${i}">${esc(c.plan[i])}</button>`).join('')}</div>`;
+  } else if (st.step === 'done') {
+    ctl = resultView();
+  }
+  return `<p class="eyebrow">Приём · день ${S.day + 1}</p>
+    <div class="patient"><div class="ava" aria-hidden="true">${esc(c.name[0])}</div><div><b>${esc(c.name)}</b><span>${years(c.age)} · ${c.fearful ? 'тревожный пациент' : 'первичный приём'}</span></div></div>
+    <div class="steps" aria-hidden="true">${STEPS.slice(0, 6).map((s, i) => `<i class="${i < si ? 'done' : ''}"></i>`).join('')}</div>
+    <div class="chat">${chat}</div>${ctl}`;
+}
+function toneChoice(v) {
+  const c = cs(), st = S.cs;
+  st.tone = v; st.chat.push({ w: 'd', t: TONES[v] });
+  if (v === c.tone) st.chat.push({ w: 'n', t: 'Пациент заметно расслабляется.' });
+  else if (c.fearful && v === 'joke') st.chat.push({ w: 'n', t: 'Пациентка натянуто улыбается, руки сжимают подлокотники.' });
+  else st.chat.push({ w: 'n', t: 'Пациент сдержанно кивает.' });
+  st.step = 'ask';
+}
+function ask(i) {
+  const c = cs(), st = S.cs;
+  if (st.asked.includes(i)) return;
+  st.asked.push(i);
+  st.chat.push({ w: 'd', t: c.q[i].q }, { w: 'p', t: c.q[i].a });
+}
+function toothClick(id) {
+  const c = cs(), st = S.cs;
+  if (st.step !== 'exam' || st.found) return;
+  if (c.tooth.includes(id)) {
+    st.found = true; st.foundId = id;
+    st.chat.push({ w: 'f', h: `ОСМОТР · ЗУБ ${id}`, t: c.exam[0].toUpperCase() + c.exam.slice(1) });
+  } else if (!st.wrong.includes(id)) {
+    st.wrong.push(id);
+    st.chat.push({ w: 'n', t: `Зуб ${id}: ${c.teeth[id] ? 'есть изменения, но пациента беспокоит не он' : 'без патологии'}.` });
+  }
+}
+function imgChoice(k) {
+  const c = cs(), st = S.cs;
+  st.img = k;
+  st.chat.push({ w: 'f', h: IMG[k].toUpperCase(), t: c.find[k] });
+  st.step = 'dx';
+}
+function finishCase() {
+  const c = cs(), st = S.cs;
+  const keys = c.q.map((q, i) => q.key ? i : -1).filter(i => i >= 0);
+  const keysOk = keys.every(i => st.asked.includes(i));
+  const r = { items: [], pts: 0 };
+  const add = (ok, txt, p) => { r.items.push({ ok, txt }); r.pts += p; };
+  const toneOk = st.tone === c.tone;
+  add(toneOk ? 'y' : 'n', toneOk ? 'Тон разговора попал в пациента' : 'Тон разговора не подошёл этому пациенту', toneOk ? 1 : 0);
+  add(keysOk ? 'y' : 'n', keysOk ? 'Ключевые вопросы анамнеза заданы' : 'Пропущен важный вопрос анамнеза: «' + c.q[keys.find(i => !st.asked.includes(i))].q + '»', keysOk ? 1 : 0);
+  add(st.wrong.length === 0 ? 'y' : 'h', st.wrong.length === 0 ? `Зуб ${st.foundId} найден с первого раза` : `Зуб ${st.foundId} найден с ${st.wrong.length + 1}-й попытки`, st.wrong.length === 0 ? 1 : 0.5);
+  const imgOk = c.img.ok.includes(st.img), imgHalf = c.img.half.includes(st.img);
+  add(imgOk ? 'y' : (imgHalf ? 'h' : 'n'), imgOk ? `Исследование выбрано верно: ${IMG[st.img].toLowerCase()}` : (imgHalf ? `${IMG[st.img]} — допустимо, но не оптимально` : `${IMG[st.img]} — неудачный выбор`), imgOk ? 1 : (imgHalf ? 0.5 : 0));
+  const dxOk = st.dx === c.dxc, planOk = st.plan === c.pc;
+  add(dxOk ? 'y' : 'n', dxOk ? 'Диагноз верный' : 'Диагноз неверный. Правильно: ' + c.dx[c.dxc], dxOk ? 1 : 0);
+  add(planOk ? 'y' : 'n', planOk ? 'План лечения верный' : 'План лечения неверный. Правильно: ' + c.plan[c.pc], planOk ? 1 : 0);
+  let stars = Math.max(1, Math.round(r.pts / 6 * 5));
+  if (!planOk) stars = Math.min(stars, 2);
+  if (c.fearful && st.tone === 'joke') stars = Math.max(1, stars - 1);
+  let complication = null;
+  if (c.risk && !keysOk) { stars = Math.max(1, stars - 2); complication = c.risk; }
+  const income = Math.round((c.fee * stars / 5 + routine()) * priceMult());
+  const dRep = { 1: -4, 2: -2, 3: 1, 4: 2, 5: 4 }[stars];
+  S.money += income; S.rep = clamp(S.rep + dRep, 0, 100);
+  S.skill = clamp(S.skill + (stars >= 3 ? 1.5 : 0.5), 0, 100);
+  st.result = { items: r.items, stars, income, dRep, complication };
+  st.step = 'done';
+  log(`${c.name}: ${'★'.repeat(stars)}${'☆'.repeat(5 - stars)}, +${rub(income)} за день`, stars >= 4 ? 'g' : (stars <= 2 ? 'b' : ''));
+}
+function resultView() {
+  const c = cs(), r = S.cs.result;
+  return `<div class="panel fade" style="margin-top:6px">
+    <p class="eyebrow">Итог приёма</p>
+    <div class="stars" aria-label="${r.stars} из 5">${'★'.repeat(r.stars)}${'☆'.repeat(5 - r.stars)}</div>
+    ${r.complication ? `<div class="note bad">${esc(r.complication)}</div>` : ''}
+    <ul class="check">${r.items.map(i => `<li class="${i.ok === 'y' ? '' : (i.ok === 'h' ? 'half' : 'no')}">${esc(i.txt)}</li>`).join('')}</ul>
+    <div class="note">${esc(c.x)}</div>
+    <div class="status" style="margin-top:12px">
+      <div class="stat"><i>Доход за день</i><b>+${rub(r.income)}</b></div>
+      <div class="stat"><i>Репутация</i><b>${r.dRep > 0 ? '+' : ''}${r.dRep}</b></div>
+    </div>
+    <button class="primary" data-a="caseDone">Завершить день</button></div>`;
+}
+
+/* tooth chart (FDI) */
+const TW = { 1: 24, 2: 22, 3: 24, 4: 27, 5: 27, 6: 36, 7: 34, 8: 32 };
+function chart(states, clickable) {
+  const upper = [18, 17, 16, 15, 14, 13, 12, 11, 21, 22, 23, 24, 25, 26, 27, 28];
+  const lower = [48, 47, 46, 45, 44, 43, 42, 41, 31, 32, 33, 34, 35, 36, 37, 38];
+  let out = '<rect class="gum" x="6" y="14" width="532" height="26" rx="13"/><rect class="gum" x="6" y="166" width="532" height="26" rx="13"/>';
+  const row = (ids, y, up) => {
+    let x = 10;
+    ids.forEach((id, i) => { if (i === 8) x += 8; const w = TW[id % 10]; out += toothSvg(id, x, y, w, up, states[id] || 'ok', clickable); x += w + 4; });
+  };
+  row(upper, 22, true); row(lower, 122, false);
+  return `<svg class="chart" viewBox="0 0 544 206" role="group" aria-label="Зубная формула">${out}</svg>`;
+}
+function toothSvg(id, x, y, w, up, state, clickable) {
+  const h = 62, rx = w * 0.32, cx = x + w / 2, cy = y + h / 2;
+  const occ = up ? y + h - 15 : y + 15;
+  const st = S.cs || { wrong: [] };
+  const mark = st.wrong.includes(id) ? 'wrong' : (st.found && st.foundId === id ? 'right' : '');
+  let body = '';
+  if (state === 'missing' || state === 'socket') {
+    body = `<rect class="tb miss" x="${x + 2}" y="${y + 6}" width="${w - 4}" height="${h - 12}" rx="${rx}"/>`;
+    if (state === 'socket') body += `<ellipse class="blood" cx="${cx}" cy="${cy}" rx="${w * 0.25}" ry="10"/>`;
+  } else if (state === 'impacted') {
+    const dy = up ? -12 : 12, rot = up ? 18 : -28;
+    body = `<g transform="translate(0 ${dy}) rotate(${rot} ${cx} ${cy})"><rect class="tb" x="${x + 2}" y="${y + 4}" width="${w - 4}" height="${h - 8}" rx="${rx}"/></g>`;
+  } else {
+    const cls = state === 'crown' ? 'crown' : (state === 'stain' ? 'stain' : '');
+    body = `<rect class="tb ${cls}" x="${x}" y="${y}" width="${w}" height="${h}" rx="${rx}"/>`;
+    if (state === 'caries') body += `<circle class="decay" cx="${cx + w * 0.08}" cy="${occ}" r="${Math.max(4, w * 0.17)}"/>`;
+    if (state === 'filling') body += `<rect class="fl" x="${cx - w * 0.25}" y="${occ - 6}" width="${w * 0.5}" height="12" rx="3"/>`;
+    if (state === 'destroyed') {
+      const e = up ? y + h : y, s = up ? -1 : 1, d = v => e + s * v;
+      body += `<polygon class="decay" points="${x},${d(0)} ${x + w},${d(0)} ${x + w},${d(22)} ${x + w * 0.8},${d(12)} ${x + w * 0.6},${d(26)} ${x + w * 0.4},${d(10)} ${x + w * 0.2},${d(24)} ${x},${d(14)}"/>`;
+    }
+  }
+  const ty = up ? 10 : 203;
+  const attrs = clickable ? `class="click ${mark}" data-a="tooth" data-v="${id}" tabindex="0" role="button" aria-label="Зуб ${id}"` : `class="${mark}"`;
+  return `<g ${attrs}>${body}<rect x="${x}" y="${y - 6}" width="${w}" height="${h + 12}" fill="transparent"/><text x="${cx}" y="${ty}" text-anchor="middle">${id}</text></g>`;
+}
+
+/* ===================== dreams ===================== */
+const CAR_PRICE = 30000000, HOUSE_PRICE = 45000000;
+function dreams() {
+  return [
+    { k: 'budget', t: 'Бюджет в Павлова', s: 'ПСПбГМУ, стоматология', ok: S.admit === 'budget' || S.admit === 'target' },
+    { k: 'diploma', t: 'Диплом врача-стоматолога', s: 'Пять лет и аккредитация', ok: !!S.path },
+    { k: 'implant', t: 'Хирург-имплантолог', s: 'Ординатура и курс имплантологии', ok: S.path === 'surg' && S.resid === 0 && S.courses.implant },
+    { k: 'clinic', t: 'Своя клиника', s: 'Открыть первую', ok: S.clinics >= 1 },
+    { k: 'network', t: 'Сеть клиник', s: S.clinics >= 3 ? `${S.clinics} клиник` : `${S.clinics} из 3`, ok: S.clinics >= 3 },
+    { k: 'mentor', t: 'Учить молодых специалистов', s: `${S.mentees} из 10 учеников`, ok: S.mentees >= 10 },
+    { k: 'tiktok', t: '100 000 в TikTok', s: fmt(S.tiktok) + ' сейчас', ok: S.tiktok >= 100000 },
+    { k: 'tg', t: '10 000 в Telegram', s: S.tgOn ? fmt(S.tg) + ' сейчас' : 'канал ещё не запущен', ok: S.tg >= 10000 },
+    { k: 'dubai', t: 'Дубай', s: 'Путешествие', ok: S.trips.includes('Дубай') },
+    { k: 'turkey', t: 'Турция', s: 'Путешествие', ok: S.trips.includes('Турция') },
+    { k: 'thai', t: 'Таиланд', s: 'Путешествие', ok: S.trips.includes('Таиланд') },
+    { k: 'style', t: 'Красиво одеваться', s: `Гардероб ${S.style} из 5`, ok: S.style >= 5 },
+    { k: 'car', t: 'Mercedes-AMG GLS 63', s: S.car ? (S.car === 'black' ? 'Чёрный, в гараже' : 'Белый, в гараже') : rub(CAR_PRICE), ok: !!S.car, buy: 'car' },
+    { k: 'house', t: 'Двухэтажный дом у реки', s: S.house ? 'Ленобласть, свой берег' : rub(HOUSE_PRICE), ok: S.house, buy: 'house' }
+  ];
+}
+function sheetView() {
+  const D = dreams(), done = D.filter(d => d.ok).length;
+  const canBuy = !!S.path;
+  const row = d => {
+    let btn = '';
+    if (d.buy === 'car' && !d.ok) btn = `<span style="display:flex;gap:4px"><button class="buy" data-a="buyCar" data-v="black" ${canBuy && S.money >= CAR_PRICE ? '' : 'disabled'}>Чёрный</button><button class="buy" data-a="buyCar" data-v="white" ${canBuy && S.money >= CAR_PRICE ? '' : 'disabled'}>Белый</button></span>`;
+    if (d.buy === 'house' && !d.ok) btn = `<button class="buy" data-a="buyHouse" ${canBuy && S.money >= HOUSE_PRICE ? '' : 'disabled'}>Купить</button>`;
+    return `<div class="dream ${d.ok ? 'done' : ''}"><span class="mk">${d.ok ? '✓' : ''}</span><div><b>${d.t}</b><small>${d.s}</small></div>${btn || '<span></span>'}</div>`;
+  };
+  return `<div class="sheet-in" role="dialog" aria-modal="true" aria-label="Доска мечт">
+    <div class="sheet-head"><h2>Доска мечт · ${done} из ${D.length}</h2><button class="ghost" data-a="closeSheet">Закрыть</button></div>
+    <p class="lead" style="margin-bottom:6px">${esc(S.name)}, ${years(age())} · ${S.path ? title() : (S.scene === 'school' || S.scene === 'ege' ? 'школьник, 11 класс' : 'студент ПСПбГМУ')}</p>
+    ${S.trips.length ? `<div class="stamps">${S.trips.map(t => `<span class="stamp">${esc(t)}</span>`).join('')}</div>` : ''}
+    <div class="dreams">${D.map(row).join('')}</div>
+    ${!canBuy ? '<p class="legend" style="margin-top:10px">Покупки откроются, когда начнётся практика.</p>' : ''}
+  </div>`;
+}
+function scFinale() {
+  return `<p class="eyebrow">Финал · ${years(age())}</p><h1>Всё сбылось</h1>
+    <p class="lead">${esc(S.name)} — ${title().toLowerCase()}, владелец сети из ${S.clinics} клиник, наставник для ${S.mentees} молодых врачей. ${fmt(S.tiktok)} подписчиков в TikTok, ${fmt(S.tg)} в Telegram. ${S.car === 'white' ? 'Белый' : 'Чёрный'} GLS 63 у дома на берегу реки, штампы: ${S.trips.join(', ')}.</p>
+    <p class="lead">Это игра, а настоящий путь начинается с ближайшего пробника по химии.</p>
+    <button class="primary" data-a="finaleGo">Продолжить практику</button>`;
+}
+
+/* ===================== render ===================== */
+const SCENES = { intro: scIntro, school: scSchool, event: scEvent, ege: scEge, uni: scUni, accred: scAccred, resid: scResid, hub: scHub, case: scCase, finale: scFinale };
+function scIntro() {
+  return `<div class="intro fade"><p class="eyebrow">Симулятор жизни · Санкт-Петербург</p>
+    <h1>Путь стоматолога</h1>
+    <p class="lead">От 11 класса до своей сети клиник. Готовишься к ЕГЭ, поступаешь в Павлова, учишься, лечишь пациентов, растишь TikTok и закрываешь пункты на доске мечт.</p>
+    <div class="road">
+      <div><b>ГЛАВА 1</b>11 класс: химия, биология, русский, TikTok и ЕГЭ</div>
+      <div><b>ГЛАВА 2</b>ПСПбГМУ им. Павлова: пять курсов, СНО, сессии</div>
+      <div><b>ГЛАВА 3</b>Практика: диалоги с пациентами, зубная формула, диагнозы</div>
+      <div><b>ФИНАЛ</b>Сеть клиник, ученики, путешествия, GLS 63 и дом у реки</div>
+    </div>
+    <label class="field" for="nm">Как тебя зовут в игре?</label>
+    <input type="text" id="nm" maxlength="24" placeholder="Например, Саша" autocomplete="off">
+    <button class="primary" data-a="start">Начать с сентября</button></div>`;
+}
+function hud() {
+  if (S.scene === 'intro') return `<div class="hud-top"><div class="who"><b>Путь стоматолога</b><span>новая игра</span></div></div>`;
+  const chapter = S.path ? 'Практика' : (['uni', 'accred', 'resid'].includes(S.scene) || S.ev && S.ev.set === 'uni' && S.scene === 'event' ? 'Университет' : 'Школа');
+  const showEnergy = S.path || ['school', 'ege'].includes(S.scene) || (S.scene === 'event' && S.ev && S.ev.set === 'school');
+  const e = Math.round(S.st.energy);
+  const chips = [
+    `<span class="chip ${S.money < 0 ? 'neg' : ''}"><i>₽</i>${fmt(S.money)}</span>`,
+    `<span class="chip"><i>TikTok</i>${fmt(S.tiktok)}</span>`,
+    S.tgOn ? `<span class="chip"><i>TG</i>${fmt(S.tg)}</span>` : '',
+    S.path ? `<span class="chip"><i>Реп.</i>${Math.round(S.rep)}</span>` : ''
+  ].join('');
+  return `<div class="hud-top"><div class="who"><b>${esc(S.name)}, ${age()}</b><span>${chapter}</span></div>
+    <button class="ghost gold" data-a="openSheet">Мечты ${dreams().filter(d => d.ok).length}/14</button></div>
+    <div class="chips">${chips}</div>
+    ${showEnergy ? `<div class="energy ${e < 25 ? 'low' : ''}"><span>Энергия</span><div class="track"><span style="width:${e}%"></span></div><span>${e}</span></div>` : ''}`;
+}
+function render() {
+  $('#hud').innerHTML = hud();
+  $('#screen').innerHTML = (SCENES[S.scene] || scIntro)();
+  $('#journal').innerHTML = S.log.length ? `<h3>Дневник</h3><ol>${S.log.map(l => `<li class="${l.k}">${esc(l.m)}</li>`).join('')}</ol>` : '';
+  $('#foot').innerHTML = ui.confirmReset
+    ? `<span>Стереть прогресс и начать заново?</span><span style="display:flex;gap:6px"><button class="ghost" data-a="resetYes">Да, заново</button><button class="ghost" data-a="resetNo">Отмена</button></span>`
+    : `<span>Игра упрощает медицину и не заменяет консультацию врача.</span>${S.scene !== 'intro' ? '<button class="ghost" data-a="reset">Начать заново</button>' : ''}`;
+  const sh = $('#sheet');
+  sh.hidden = !ui.sheet;
+  sh.innerHTML = ui.sheet ? sheetView() : '';
+  const key = S.scene + (S.scene === 'uni' ? S.uni.year : '') + (S.scene === 'school' ? S.month : '') + (ui.tripMenu ? 't' : '');
+  if (key !== ui.lastScene) { window.scrollTo(0, 0); ui.lastScene = key; }
+}
+
+/* ===================== handlers ===================== */
+const H = {
+  start: () => { const n = ($('#nm').value || '').trim(); S = fresh(n || 'Я'); log('Сентябрь, 11 класс. Цель — стоматология в Павлова на бюджете.'); },
+  pick: v => { if (S.picks.length < 3) S.picks.push(v); },
+  unpick: v => { S.picks.splice(+v, 1); },
+  endMonth: () => { if (S.picks.length === 3) endMonth(); },
+  evPick: v => { const ev = EVENT_SETS[S.ev.set][S.ev.id]; if (S.ev.res) return; const r = ev.o[+v].r(); S.st.energy = clamp(S.st.energy, 0, 100); S.ev.res = r; log(r); },
+  evNext: () => { const next = S.ev.set; S.ev = null; if (next === 'school') afterSchoolMonth(); else afterUniYear(); },
+  ege: v => egeChoice(v),
+  uniPick: v => { const p = S.uni.picks; const i = p.indexOf(v); if (i >= 0) p.splice(i, 1); else if (p.length < 2) p.push(v); },
+  uniEnd: () => { if (S.uni.picks.length === 2) uniEnd(); },
+  quiz: v => { if (S.uni.quizPick === null) quizAnswer(+v); },
+  quizNext: () => quizNext(),
+  accredNext: () => { if (S.accred < 50) { S.accred = clamp(S.accred + 15 + ri(0, 10), 50, 100); S.uni.hands += 5; log('Месяц тренировок на фантомах — и пересдача.'); return; } log('Диплом врача-стоматолога получен!', 'g'); S.scene = 'resid'; },
+  resid: v => startPractice(v),
+  case: () => { if (S.st.energy >= 18) startCase(); },
+  week: () => {
+    if (S.st.energy < 35) return;
+    const inc = Math.round(routine() * 5 * priceMult() * 0.9);
+    S.money += inc; S.st.energy = clamp(S.st.energy - 35, 0, 100); S.skill = clamp(S.skill + 1, 0, 100); S.rep = clamp(S.rep + 1, 0, 100);
+    nextDay(5); log(`Неделя приёмов: +${rub(inc)}${S.clinics ? ', клиники принесли ещё ' + rub(clinicIncome() * 5) : ''}`);
+  },
+  content: () => {
+    if (S.contentToday || S.st.energy < 8) return;
+    S.contentToday = true; S.st.energy -= 8;
+    post(1 + S.rep / 50 + S.clinics * 0.3);
+    if (S.tgOn) { const g = ri(30, 120) + Math.round(S.rep * 3); S.tg += g; }
+  },
+  rest: () => { S.st.energy = clamp(S.st.energy + 40, 0, 100); nextDay(1); log('Выходной. Прогулка по набережной Невы, энергия +40.'); },
+  treat: () => {
+    if (S.style < 5) { const c = 150000 * (S.style + 1); if (S.money < c) return; S.money -= c; S.style++; log(`Новый образ: гардероб ${S.style} из 5.`, 'g'); }
+    else { if (S.money < 60000) return; S.money -= 60000; log('Ужин в любимом ресторане.'); }
+    S.st.energy = clamp(S.st.energy + 20, 0, 100);
+  },
+  tripMenu: () => { ui.tripMenu = true; },
+  tripBack: () => { ui.tripMenu = false; },
+  trip: v => {
+    const t = TRIPS.find(x => x[0] === v); if (!t || S.money < t[1]) return;
+    S.money -= t[1]; addTrip(v); S.st.energy = 100; nextDay(7); post(2.5 + S.style * 0.2);
+    log(`${v}: неделя отдыха и тревел-влог.`, 'g'); ui.tripMenu = false;
+  },
+  tg: () => { if (S.tiktok >= 3000) { S.tgOn = true; S.tg = Math.round(S.tiktok * 0.05); log(`Telegram-канал запущен: ${fmt(S.tg)} подписчиков с первого дня.`, 'g'); } },
+  residLater: () => { if (S.rep < 20 && S.money < 1200000) return; enterResid(); },
+  course: v => {
+    const cost = v === 'implant' ? 350000 : 500000; if (S.money < cost) return;
+    S.money -= cost; S.courses[v] = true; S.skill = clamp(S.skill + 5, 0, 100); nextDay(3);
+    log(v === 'implant' ? 'Курс имплантологии пройден. Открыты пациенты на импланты.' : 'Курс синус-лифтинга пройден. Открыты сложные случаи.', 'g');
+  },
+  clinic: () => {
+    const req = clinicReq(), c = clinicCost();
+    if (S.rep < req.rep || S.mentees < req.mentees || S.money < c) return;
+    S.money -= c; S.clinics++;
+    log(S.clinics === 1 ? `Открыта клиника «${S.name}». Мечта сбылась!` : `Открыт филиал №${S.clinics}.`, 'g');
+  },
+  mentor: () => { if (S.st.energy < 15) return; S.st.energy -= 15; S.mentees++; S.rep = clamp(S.rep + 2, 0, 100); nextDay(1); log(`Новый ученик в клинике. Всего учеников: ${S.mentees}.`); },
+  tone: v => toneChoice(v),
+  ask: v => ask(+v),
+  toExam: () => { S.cs.step = 'exam'; },
+  tooth: v => toothClick(+v),
+  toImg: () => { S.cs.step = 'img'; },
+  img: v => imgChoice(v),
+  dx: v => { const c = cs(); S.cs.dx = +v; S.cs.chat.push({ w: 'd', t: 'Диагноз: ' + c.dx[+v] }); S.cs.step = 'plan'; },
+  plan: v => { const c = cs(); S.cs.plan = +v; S.cs.chat.push({ w: 'd', t: 'План: ' + c.plan[+v] }); finishCase(); },
+  caseDone: () => { S.cs = null; nextDay(1); S.scene = 'hub'; checkFinale(); },
+  openSheet: () => { ui.sheet = true; },
+  closeSheet: () => { ui.sheet = false; },
+  buyCar: v => { if (S.money < CAR_PRICE || S.car) return; S.money -= CAR_PRICE; S.car = v; log(`${v === 'black' ? 'Чёрный' : 'Белый'} Mercedes-AMG GLS 63 у подъезда!`, 'g'); checkFinale(); },
+  buyHouse: () => { if (S.money < HOUSE_PRICE || S.house) return; S.money -= HOUSE_PRICE; S.house = true; log('Двухэтажный дом у реки. Ключи у тебя.', 'g'); checkFinale(); },
+  finaleGo: () => { S.scene = 'hub'; },
+  reset: () => { ui.confirmReset = true; },
+  resetNo: () => { ui.confirmReset = false; },
+  resetYes: () => { ui.confirmReset = false; ui.sheet = false; ui.tripMenu = false; try { localStorage.removeItem(KEY); } catch (e) {} S = { scene: 'intro', log: [], st: { energy: 0 } }; }
+};
+function checkFinale() {
+  if (S.finaleSeen) return;
+  const D = dreams().filter(d => d.k !== 'budget');
+  if (D.every(d => d.ok)) { S.finaleSeen = true; ui.sheet = false; S.scene = 'finale'; }
+}
+function act(el) {
+  const fn = H[el.dataset.a];
+  if (!fn) return;
+  fn(el.dataset.v, el);
+  if (S && S.scene !== 'intro') save();
+  render();
+}
+document.addEventListener('click', e => {
+  const el = e.target.closest('[data-a]');
+  if (!el || el.disabled) return;
+  if (el.id === 'sheet') return;
+  act(el);
+});
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape' && ui.sheet) { ui.sheet = false; render(); return; }
+  if ((e.key === 'Enter' || e.key === ' ') && e.target.matches && e.target.matches('g[data-a]')) { e.preventDefault(); act(e.target); }
+  if (e.key === 'Enter' && e.target.id === 'nm') act({ dataset: { a: 'start' } });
+});
+$('#sheet').addEventListener('click', e => { if (e.target.id === 'sheet') { ui.sheet = false; render(); } });
+
+function start(data) {
+  S = (data && data.v) ? data : (load() || { scene: 'intro', log: [], st: { energy: 0 } });
+  if (window.claude && window.claude.hot && window.claude.hot.snapshot) { try { window.claude.hot.snapshot(() => S); } catch (e) {} }
+  render();
+}
+if (window.claude && window.claude.hot && window.claude.hot.ready) window.claude.hot.ready(start);
+else start((window.claude && window.claude.hot && window.claude.hot.data) || {});
+</script>
+</body>
+</html>
