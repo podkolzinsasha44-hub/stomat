@@ -1,0 +1,30 @@
+/* Layout: full-bleed WebGL canvas with a DOM overlay for HUD, dialogs and panels. */
+:root {
+  --ink: #0f1d22;
+  --ink-2: #3d5158;
+  --paper: #f6f8f7;
+  --panel: rgba(250, 252, 251, 0.94);
+  --panel-dark: rgba(14, 26, 30, 0.82);
+  --line: rgba(15, 29, 34, 0.12);
+  --teal: #1d6a70;
+  --teal-2: #2f8f93;
+  --mint: #bfe3dc;
+  --gold: #b8892f;
+  --ok: #2f8a57;
+  --warn: #c98a1b;
+  --bad: #c0392b;
+  --f-body: 'Golos Text', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --f-display: 'Unbounded', 'Golos Text', system-ui, sans-serif;
+  --f-mono: 'JetBrains Mono', ui-monospace, Menlo, Consolas, monospace;
+  color-scheme: light;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; height: 100%; background: #0d1416; overflow: hidden; }
+body { font: 15px/1.45 var(--f-body); color: var(--ink); -webkit-font-smoothing: antialiased; }
+#app { position: fixed; inset: 0; }
+#gl { position: absolute; inset: 0; width: 100%; height: 100%; display: block; outline: none; }
+#ui { position: absolute; inset: 0; pointer-events: none; }
+#ui > * { pointer-events: auto; }
+[hidden] { display: none !important; }
+button { font: inherit; color: inherit; cursor: pointer; }
+:focus-visible { outline: 2px solid var(--teal-2); outline-offset: 2px; }
